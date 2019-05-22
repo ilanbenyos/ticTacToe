@@ -1,21 +1,21 @@
 import Vue from "vue";
 import Router from "vue-router";
-import BackApp from "./views/BackApp.vue";
-import FrontApp from "./views/FrontApp.vue";
+import Home from "./views/Home.vue";
+import Game from "./views/Game.vue";
 
 Vue.use(Router);
 
 export default new Router({
   routes: [
     {
-      path: "/front-app",
-      name: "FrontApp",
-      component: FrontApp
+      path: "/game",
+      name: "game",
+      component: Game
     },
       {
-      path: "/back-app",
-      name: "BackApp",
-      component: BackApp
+      path: "/",
+      name: "home",
+      component: Home
     },
     {
       path: "/about",
