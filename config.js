@@ -1,3 +1,3 @@
-let baseApi = "http://localhost:3000/";
+let baseApi = "http://localhost:3001/v1";
 
 export { baseApi };

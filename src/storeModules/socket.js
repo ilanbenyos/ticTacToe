@@ -1,40 +1,38 @@
 import io from "socket.io-client";
-import { baseApi } from "../../config";
-
 let $socket = null;
 
 export default {
   namespaced: true,
-  modules: { },
+  modules: {},
   state: {},
   getters: {},
   mutations: {},
   actions: {
-    async initModule({ dispatch }) {
-      await dispatch("initSocket");
-    },
-
     async initSocket({ commit, dispatch, rootGetters }) {
-      // if(!rootGetters['user/isLogged']) return;
-      let userId = rootGetters["user/getMe"];
-      userId = userId._id;
+      let userId = rootGetters["user/userId"];
       let token = localStorage.getItem("jwtToken");
       $socket = io.connect(
-        `http://localhost:3000?token=${token}&userId=${userId}`
+        `http://localhost:3001?token=${token}&userId=${userId}`
       );
       $socket.on("connect", async () => {
         console.log("$socket.on.connect => 7777777777777777777777777");
-        await dispatch("chat/messages/getAllNewMsgs", null, { root: true });
       });
-      $socket.on("newMsg", ({ msgData, user }) => {
-        dispatch("chat/messages/newMsg", { msgData, user }, { root: true });
+      $socket.on("JOIN_REQUEST", async (game, user) => {
+        await dispatch(
+          "game/joinRequestEntered",
+          { game, user },
+          { root: true }
+        );
       });
-      $socket.on("newSystemMsg", data => {
-        if (data.actionType === "activeGameStarted") {
-          dispatch("activeGames/activeGameStarted", data.activeGameCard, {
-            root: true
-          });
-        }
+      $socket.on("GAME_STARTED", async ({game}) => {
+        await dispatch("game/gameStarted", {game}, { root: true });
+      });
+      $socket.on("GAME_MOVE", async ({game}) => {
+        await dispatch("game/gameMove", {game}, { root: true });
+      });
+      $socket.on("JOIN_REQUEST_REJECTED", async game => {
+        vue.$notify("JOIN_REQUEST_REJECTED");
+        await dispatch("games/fetchGames", game, { root: true });
       });
     }
   }

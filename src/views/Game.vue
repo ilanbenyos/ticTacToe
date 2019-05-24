@@ -1,55 +1,43 @@
 <template>
-  <v-container class="home app-page">
-    <h1 class="mt-5">Front App</h1>
-
-    <h4><small>DB Status: </small>{{ dbStatus }}</h4>
-    <h6 class="mb-3">options: ['init','inDb','inStore','empty']</h6>
-    <div class="buttons d-flex flex-column">
-      <v-btn @click="fetchAll">
-        <span class="mr-2">Fetch Words</span>
-      </v-btn>
-      <v-btn @click="showReport" :disabled="dbStatus !== 'inDb'">
-        <span class="mr-2">Show Report</span>
-      </v-btn>
-      <v-btn @click="emptyStore" :disabled="dbStatus !== 'inStore'">
-        <span class="mr-2">Empty Store</span>
-      </v-btn>
-      <v-btn
-        @click="emptyDb"
-        :disabled="dbStatus === 'empty' || dbStatus === 'init'"
-      >
-        <span class="mr-2">Empty Web SQL</span>
-      </v-btn>
-    </div>
-
-    <v-expansion-panel v-model="panel" class="mt-3" expand>
-      <v-expansion-panel-content
-        v-for="(wordArr, attr, idx) in wordsObj"
-        :key="idx"
-      >
-        <template v-slot:header>
-          <div>{{ attr }}</div>
-          <small class="text-center" v-if="wordArr.length > 999"
-            >(can't fetch more then 1000 words) </small
-          ><small class="text-right mr-3"
-            >total: {{ wordArr.length }} items</small
+  <v-container class="game app-page">
+    <h1 class="mt-5">Game</h1>
+    <div class="board-wrapper d-flex">
+      <div class="board" v-if="game">
+        <div class="board-row d-flex" v-for="(row, i) in game.board" :key="i">
+          <div
+            class="square"
+            @click="clicked(i, j)"
+            :class="{ clickable: !!!square }"
+            v-for="(square, j) in row"
+            :key="j"
           >
-        </template>
-        <v-card>
-          <v-card-text>{{ wordArr }}</v-card-text>
-        </v-card>
-      </v-expansion-panel-content>
-    </v-expansion-panel>
+            {{ square }}
+          </div>
+        </div>
+      </div>
+    </div>
   </v-container>
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 export default {
-  name: "Home",
-  data: () => ({
-    panel: []
-  }),
+  name: "Game",
+  props: {
+    gameId: {}
+  },
+  data: () => ({}),
+  async created() {
+    this.$store.dispatch("game/getGame", this.gameId);
+  },
   methods: {
+    async clicked(i, j) {
+      let obj = {
+        square: [i, j],
+        gameId: this.gameId
+      };
+      await this.$store.dispatch("game/clicked", obj);
+    },
     async dispatchEvent(actionStr) {
       try {
         this.$loading(true);
@@ -59,41 +47,43 @@ export default {
       } finally {
         this.$loading(false);
       }
-    },
-    async emptyStore() {
-      await this.dispatchEvent("emptyStore");
-    },
-    async emptyDb() {
-      await this.dispatchEvent("dropAllTables");
-    },
-    async showReport() {
-      await this.dispatchEvent("showReport");
-    },
-    async fetchAll() {
-      await this.dispatchEvent("fetchAllFromApi");
     }
   },
   computed: {
-    wordsObj() {
-      return this.$store.getters["wordsObj"];
-    },
-    dbStatus() {
-      return this.$store.getters["dbStatus"];
-    },
-    words() {
-      return this.$store.getters["words"];
-    }
+    ...mapGetters("game", {
+      game: "getGame"
+    })
   }
 };
 </script>
 
 <style scoped lang="scss">
-.home.app-page {
-  .buttons {
-    max-width: 20rem;
+.game {
+  .board-wrapper {
+    margin: auto;
+    width: 300px;
   }
-  .word-section {
-    max-height: 30vh;
+  .square {
+    text-align: center;
+    line-height: 2;
+    font-size: 50px;
+    width: 100px;
+    height: 100px;
+    background-color: white;
+    transition: all 0.5s;
+    margin: 5px;
+    border-radius: 10px;
+    pointer-events: none;
+    &:hover {
+      background-color: gray;
+    }
+    &.clickable {
+      cursor: pointer;
+      pointer-events: initial;
+    }
+    img {
+      width: calc(100% - 1px);
+    }
   }
 }
 </style>

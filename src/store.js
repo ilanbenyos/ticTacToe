@@ -2,13 +2,15 @@ import Vue from "vue";
 import Vuex from "vuex";
 import axios from "axios";
 import socket from "./storeModules/socket";
+import games from "./storeModules/games";
+import game from "./storeModules/game";
 import user from "./storeModules/user";
 
 Vue.use(Vuex);
 let db;
 
 export default new Vuex.Store({
-  modules: { user, socket },
+  modules: { user, socket, game, games },
   state: {
     isLoading: false,
     dbStatus: "init",
@@ -45,8 +47,15 @@ export default new Vuex.Store({
       commit("insertWordsToStore", {});
       commit("setDbStatus", "inDb");
     },
-    async initDB() {
-      db = openDatabase("words", "0.1", "A Database of words", 5 * 1024 * 1024);
+    async initStore({ dispatch }) {
+      let token = localStorage.getItem("jwtToken");
+      if (token) {
+        let arr = [
+          await dispatch("game/initModule"),
+          await dispatch("user/initModule")
+        ];
+        await Promise.all(arr);
+      }
     },
     async dropAllTables({ getters, dispatch, commit }) {
       db.transaction(async function(tx) {

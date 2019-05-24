@@ -17,6 +17,7 @@ import Vue from "vue";
 export default {
   name: "overlay-manager",
   created() {
+    Vue.prototype.$notify = this.notify;
     Vue.prototype.$toast = this.toast;
     Vue.prototype.$loader = this.loader;
   },
@@ -32,10 +33,21 @@ export default {
   },
   watch: {},
   methods: {
+    notify({text,title}) {
+      this.$swal({
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        text,
+        title
+      });
+    },
     toast(txt) {
       this.$swal({
         toast: true,
-        position: "top-end",
+        showCloseButton: true,
+        position: "top",
         showConfirmButton: false,
         timer: 3000,
         text: txt

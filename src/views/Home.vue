@@ -1,15 +1,26 @@
 <template>
   <v-container class="back-app app-page">
     <h2 class="mb-4">Home</h2>
-      <v-flex xs12 sm6 md3 mb-4>
-          <v-text-field
-                  label="User Name"
-                  placeholder="please enter your user name"
-          ></v-text-field>
-      </v-flex>
+    <v-flex xs12 sm6 md3 mb-4>
+      <v-text-field
+        v-model="userName"
+        label="User Name"
+        placeholder="please enter your user name"
+      ></v-text-field>
+    </v-flex>
+    <v-flex xs12 sm6 md3 mb-4>
+      <v-text-field
+        v-model="password"
+        label="User Password"
+        placeholder="please enter your Password"
+      ></v-text-field>
+    </v-flex>
     <div class="buttons d-flex flex-column">
-      <v-btn @click="submit">
-        <span class="mr-2">Submit</span>
+      <v-btn @click="register">
+        <span class="mr-2">Register</span>
+      </v-btn>
+      <v-btn @click="login">
+        <span class="mr-2">Login</span>
       </v-btn>
     </div>
   </v-container>
@@ -19,13 +30,30 @@
 export default {
   name: "Home",
   data: () => ({
-    userName: ""
+    password: "1234",
+    userName: "qqqq"
   }),
   methods: {
-    async submit() {
+    async register() {
       try {
         this.$loading(true);
-        return await this.$store.dispatch(`user/submit`, this.userName);
+        let obj = { userName: this.userName, password: this.password };
+        await this.$store.dispatch(`user/register`, obj);
+        this.$toast("Registered Successfully");
+        this.$router.push({ name: "game" });
+      } catch (err) {
+        console.log(err);
+      } finally {
+        this.$loading(false);
+      }
+    },
+    async login() {
+      try {
+        this.$loading(true);
+          let obj = { userName: this.userName, password: this.password };
+          await this.$store.dispatch(`user/login`,obj);
+        this.$toast("Login Successfully");
+        this.$router.push({ name: "game" });
       } catch (err) {
         console.log(err);
       } finally {
@@ -33,9 +61,7 @@ export default {
       }
     }
   },
-  computed: {
-
-  }
+  computed: {}
 };
 </script>
 

@@ -6,8 +6,12 @@
         <span class="font-weight-light">- TIC-TAC-TOE</span>
       </v-toolbar-title>
       <v-spacer></v-spacer>
+
+      <div class="user-name ml-2 h4" v-if="user">{{ user.userName }}</div>
+
+      <v-spacer></v-spacer>
       <router-link :to="{ name: 'home' }" class="ml-2">Home</router-link>
-      <router-link :to="{ name: 'game' }" class="ml-2">Game</router-link>
+      <router-link :to="{ name: 'games' }" class="ml-2">Games</router-link>
       <router-link :to="{ name: 'about' }" class="ml-2">About Ilan</router-link>
     </v-toolbar>
     <router-view></router-view>
@@ -28,11 +32,15 @@ export default {
       //
     };
   },
-  beforeCreate() {
+  async beforeCreate() {
     window.vue = this;
+    await this.$store.dispatch("initStore");
   },
 
   computed: {
+    user() {
+      return this.$store.getters["user/getMe"];
+    },
     isLoading() {
       return this.$store.getters.isLoading;
     }
