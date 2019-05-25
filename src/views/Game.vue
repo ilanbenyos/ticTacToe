@@ -18,6 +18,7 @@
             class="square"
             @click="clicked(i, j)"
             :class="{
+              blink: game.winner && isBlinking('' + i + j),
               clickable: !!!square && isMyTurn && game.status == 'playing'
             }"
             v-for="(square, j) in row"
@@ -46,6 +47,13 @@ export default {
     this.$store.dispatch("game/getGame", this.$route.params.gameId);
   },
   methods: {
+    isBlinking(str) {
+      if (!this.game) return false;
+      const vArr = this.game.victoryArr;
+      if (!vArr) return false;
+      let mapped = vArr.map(i => "" + i[0] + i[1]);
+      return mapped.includes(str);
+    },
     async clicked(i, j) {
       let obj = {
         square: [i, j],
@@ -89,9 +97,13 @@ export default {
   },
   watch: {
     "game.winner": function(newVal) {
+      if (!this.user || !newVal) return;
+
+      const IsWinner = this.user._id === newVal;
+      const type = IsWinner ? "success" : "warning";
       this.$swal({
-        text: `YOU ${this.user._id === newVal ? "WIN" : "LOSE"}`,
-        type: "warning",
+        text: `YOU ${IsWinner ? "WIN" : "LOSE"}`,
+        type,
         showCancelButton: false,
         confirmButtonColor: "#3085d6",
         title: "GAME ENDED!"
@@ -127,6 +139,15 @@ export default {
     }
     img {
       width: calc(100% - 1px);
+    }
+  }
+  .blink {
+    animation: blinker 1s linear infinite;
+  }
+
+  @keyframes blinker {
+    50% {
+      background-color: lightcoral;
     }
   }
 }

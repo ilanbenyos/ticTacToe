@@ -87,7 +87,7 @@ export default {
       });
       await dispatch("games/fetchGames", null, { root: true });
     },
-    async gameStarted({ commit }, game ) {
+    async gameStarted({ commit }, game) {
       window.vue.$router.push({ name: "game", params: { gameId: game._id } });
     },
     async gameMove({ commit }, { game }) {
