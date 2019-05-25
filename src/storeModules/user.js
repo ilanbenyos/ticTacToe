@@ -49,10 +49,12 @@ export default {
       let res = await axios.post(`${baseApi}/users/login`, userData);
       dispatch("userFetched", res);
     },
-    async logout({ dispatch }) {
+    async logout({ dispatch, commit }) {
       await axios.post(`${baseApi}/users/logout`);
       localStorage.removeItem("jwtToken");
-      await dispatch("socket/closeSocket", null, { root: true });
+        commit("setUser", null);
+
+        await dispatch("socket/closeSocket", null, { root: true });
     },
     async userFetched({ commit, dispatch }, { user, token }) {
       commit("setUser", user);

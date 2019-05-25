@@ -8,10 +8,11 @@
       <v-spacer></v-spacer>
 
       <div class="user-name ml-2 h4" v-if="user">{{ user.userName }}</div>
+      <!--<div class="ml-2 h4" @click="$store.dispatch('user/testConnection')" v-if="isLogged">test</div>-->
 
       <v-spacer></v-spacer>
       <router-link :to="{ name: 'home' }" class="ml-2">Home</router-link>
-      <router-link :to="{ name: 'games' }" class="ml-2">Games</router-link>
+      <router-link v-if="isLogged" :to="{ name: 'games' }" class="ml-2">Games</router-link>
       <router-link :to="{ name: 'about' }" class="ml-2">About Ilan</router-link>
     </v-toolbar>
     <router-view></router-view>
@@ -40,6 +41,9 @@ export default {
   computed: {
     user() {
       return this.$store.getters["user/getMe"];
+    },
+      isLogged() {
+      return this.$store.getters["user/isLogged"];
     },
     isLoading() {
       return this.$store.getters.isLoading;

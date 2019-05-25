@@ -1,28 +1,30 @@
 <template>
   <v-container class="back-app app-page">
     <h2 class="mb-4">Home</h2>
-    <v-flex xs12 sm6 md3 mb-4>
+      <v-form v-if="!isLogged">
+        <v-flex xs12 sm6 md3 mb-4>
       <v-text-field
         v-model="userName"
         label="User Name"
         placeholder="please enter your user name"
       ></v-text-field>
     </v-flex>
-    <v-flex xs12 sm6 md3 mb-4>
+        <v-flex xs12 sm6 md3 mb-4>
       <v-text-field
         v-model="password"
         label="User Password"
         placeholder="please enter your Password"
       ></v-text-field>
     </v-flex>
+      </v-form>
     <div class="buttons d-flex flex-column">
-      <v-btn @click="register">
+      <v-btn @click="register" v-if="!isLogged">
         <span class="mr-2">Register</span>
       </v-btn>
-      <v-btn @click="login">
+      <v-btn @click="login"  v-if="!isLogged">
         <span class="mr-2">Login</span>
       </v-btn>
-      <v-btn @click="logout">
+      <v-btn @click="logout"  v-if="isLogged">
         <span class="mr-2">Logout</span>
       </v-btn>
     </div>
@@ -63,10 +65,10 @@ export default {
         this.$loading(false);
       }
     },
-      async logout() {
+    async logout() {
       try {
         this.$loading(true);
-        await this.$store.dispatch('user/logout')
+        await this.$store.dispatch("user/logout");
         this.$toast("Logout Successfully");
       } catch (err) {
         console.log(err);
@@ -75,7 +77,11 @@ export default {
       }
     }
   },
-  computed: {}
+  computed: {
+    isLogged() {
+      return this.$store.getters["user/isLogged"];
+    }
+  }
 };
 </script>
 

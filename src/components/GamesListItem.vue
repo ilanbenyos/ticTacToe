@@ -5,10 +5,10 @@
     <div v-if="item.member" class="ml-2">vs {{ item.member.userName }}</div>
 
     <v-spacer></v-spacer>
-    <div>{{ item.status }}</div>
+    <div>{{ statusStr }}</div>
     <v-spacer></v-spacer>
     <v-btn flat @click="joinRequest()" v-if="canJoin" class="waiting-list h6"
-      >Join This Game Now</v-btn
+      >Ask TO Join</v-btn
     >
     <v-btn
       flat
@@ -17,15 +17,30 @@
       class="waiting-list h6"
       >GoTo Game</v-btn
     >
-
-    <!--<v-select :items="item.waitinglist.userName" @change="selectWaitingList" label="Standard"></v-select>-->
+    <v-menu open-on-hover offset-y v-if="waitingSelect">
+      <template v-slot:activator="{ on }">
+        <v-btn color="primary" dark v-on="on">
+          Dropdown
+        </v-btn>
+      </template>
+      <v-list>
+        <v-list-tile
+          v-for="(i, index) in item.waitingList"
+          :key="index"
+          @click="selectWaitingList(index)"
+        >
+          <v-list-tile-title>{{ i.userName }}</v-list-tile-title>
+        </v-list-tile>
+      </v-list>
+    </v-menu>
 
     <v-btn
-      flat
+      icon
       @click="$store.dispatch('game/deleteGame', item._id)"
       class="waiting-list h6"
-      >DEL</v-btn
     >
+      <v-icon>delete</v-icon>
+    </v-btn>
   </v-list-tile>
 </template>
 
@@ -36,6 +51,22 @@ export default {
     item: { type: Object, required: true }
   },
   computed: {
+    waitingSelect() {
+      if (this.item.status !== "waiting") return false;
+      if (this.item.owner._id == this.userId) return true;
+      return false;
+    },
+    statusStr() {
+      const game = this.item;
+      if (this.item.status === "ended") {
+        let winnerName =
+          game.winner === game.owner._id
+            ? game.owner.userName
+            : game.member.userName;
+        return `${winnerName} won`;
+      }
+      return this.item.status;
+    },
     userId() {
       return this.$store.getters["user/userId"];
     },
@@ -45,11 +76,9 @@ export default {
       );
     },
     canRoute() {
-      if (this.item.status !== "playing") return false;
-      return (
-        this.item.owner._id === this.userId ||
-        this.item.member._id === this.userId
-      );
+      if (this.item.status == "waiting") return false;
+      if (this.item.status == "init") return false;
+      return true;
     },
     canJoin() {
       if (this.item.owner._id === this.userId) return false;
@@ -59,9 +88,10 @@ export default {
     }
   },
   methods: {
-    async selectWaitingList(v) {
-      let rrr = v;
-      debugger;
+    async selectWaitingList(idx) {
+        let memberId = this.item.waitingList[idx]._id
+        let obj = { memberId, gameId: this.item._id };
+        await this.dispatchEvent("game/startGame", obj);
     },
     async dispatchEvent(actionStr, data) {
       try {
