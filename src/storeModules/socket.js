@@ -8,6 +8,9 @@ export default {
   getters: {},
   mutations: {},
   actions: {
+    async closeSocket() {
+      $socket = null;
+    },
     async initSocket({ commit, dispatch, rootGetters }) {
       let userId = rootGetters["user/userId"];
       let token = localStorage.getItem("jwtToken");
@@ -24,11 +27,15 @@ export default {
           { root: true }
         );
       });
-      $socket.on("GAME_STARTED", async ({game}) => {
-        await dispatch("game/gameStarted", {game}, { root: true });
+      $socket.on("GAME_STARTED", async game => {
+        await dispatch("game/gameStarted", game, { root: true });
       });
-      $socket.on("GAME_MOVE", async ({game}) => {
-        await dispatch("game/gameMove", {game}, { root: true });
+      $socket.on("GAME_MOVE", async ({ game }) => {
+        await dispatch("game/gameMove", { game }, { root: true });
+      });
+      $socket.on("TEST_CONNECTION", async msg => {
+        console.log(msg);
+        window.alert(msg);
       });
       $socket.on("JOIN_REQUEST_REJECTED", async game => {
         vue.$notify("JOIN_REQUEST_REJECTED");

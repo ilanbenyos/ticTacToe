@@ -36,17 +36,19 @@ export default {
     }
   },
   actions: {
-    initModule({ dispatch }) {},
-    async initGame({ commit }) {
-      let { game } = await axios.post(`${baseApi}/games/initGame`);
-      commit("setGame", game);
-      window.vue.$router.push({ name: "game", params: { gameId: game._id } });
+    async deleteGame({ dispatch }, gameId) {
+      await axios.post(`${baseApi}/games/deleteGame`, { gameId });
+      await dispatch("games/fetchGames", null, { root: true });
     },
-    async joinRequest({ commit }, gameId) {
+    async initGame({ dispatch }) {
+      let { game } = await axios.post(`${baseApi}/games/initGame`);
+      await dispatch("games/fetchGames", null, { root: true });
+    },
+    async joinRequest({ commit, dispatch }, gameId) {
       let { game } = await axios.post(`${baseApi}/games/joinRequest`, {
         gameId
       });
-      commit("setGame", game);
+      await dispatch("games/fetchGames", null, { root: true });
     },
     async joinRequestEntered({ commit, dispatch }, { game, user }) {
       vue
@@ -69,33 +71,34 @@ export default {
           }
         });
 
-      // await dispatch("games/fetchGames", game, { root: true });
+      await dispatch("games/fetchGames", game, { root: true });
     },
-    async rejectJoinRequest({ commit }, { memberId, gameId }) {
+    async rejectJoinRequest({ commit, dispatch }, { memberId, gameId }) {
       await axios.post(`${baseApi}/games/rejectJoinRequest`, {
         memberId,
         gameId
       });
+      await dispatch("games/fetchGames", null, { root: true });
     },
-    async startGame({ commit }, { memberId, gameId }) {
+    async startGame({ commit, dispatch }, { memberId, gameId }) {
       await axios.post(`${baseApi}/games/startGame`, {
         memberId,
         gameId
       });
+      await dispatch("games/fetchGames", null, { root: true });
     },
-    async gameStarted({ commit }, { game }) {
+    async gameStarted({ commit }, game ) {
       window.vue.$router.push({ name: "game", params: { gameId: game._id } });
     },
-      async gameMove({ commit }, { game }) {
+    async gameMove({ commit }, { game }) {
       commit("setGame", game);
     },
     async getGame({ commit }, gameId) {
       let { game } = await axios.post(`${baseApi}/games/getGame`, { gameId });
-      if (!game) debugger;
       commit("setGame", game);
     },
     async clicked(_, { gameId, square }) {
-      await axios.post(`${baseApi}/games/clicked`, { gameId, square });
+      await axios.post(`${baseApi}/games/gameMove`, { gameId, square });
     }
   }
 };

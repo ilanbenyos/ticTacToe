@@ -23,7 +23,7 @@
 </template>
 
 <script>
-import overlayManager from "./components/partials/overlayManager";
+import overlayManager from "./components/partials/OverlayManager";
 export default {
   name: "App",
   components: { overlayManager },
@@ -68,5 +68,8 @@ export default {
 }
 .router-link-exact-active.router-link-active {
   color: lightseagreen;
+}
+.rol-btn {
+  cursor: pointer;
 }
 </style>

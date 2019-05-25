@@ -7,6 +7,11 @@ import store from "./store";
 
 Vue.config.productionTip = false;
 
+Vue.filter("gameName", function(value) {
+  if (!value) return "";
+  value = value.toString();
+  return value.substring(6, 10);
+});
 
 
 

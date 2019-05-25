@@ -1,6 +1,5 @@
 import Vue from "vue";
 import axiosPlugin from "./axiosPlugin";
-// import notify from "./notify";
 import VeeValidate from "vee-validate";
 
 import Vuetify from "vuetify";

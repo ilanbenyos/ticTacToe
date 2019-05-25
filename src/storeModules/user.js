@@ -18,9 +18,6 @@ export default {
     }
   },
   mutations: {
-    setToken(state, token) {
-      localStorage.setItem("jwtToken", token);
-    },
     setUser(state, user) {
       state.user = user;
     },
@@ -36,6 +33,10 @@ export default {
         await dispatch("socket/initSocket", null, { root: true });
       }
     },
+    async testConnection() {
+      await axios.post(`${baseApi}/games/testV`, {msg: 'test success!!'});
+      // await axios.post(`${baseApi}/users/testConnection`, {msg: 'test success!!'});
+    },
     async getMe({ commit }) {
       let { user } = await axios.post(`${baseApi}/users/getMe`);
       commit("setUser", user);
@@ -49,19 +50,14 @@ export default {
       dispatch("userFetched", res);
     },
     async logout({ dispatch }) {
-      let res = await axios.post(`${baseApi}/users/logout`);
-      dispatch("logout", res);
+      await axios.post(`${baseApi}/users/logout`);
       localStorage.removeItem("jwtToken");
       await dispatch("socket/closeSocket", null, { root: true });
     },
     async userFetched({ commit, dispatch }, { user, token }) {
       commit("setUser", user);
-      commit("setToken", token);
+      localStorage.setItem("jwtToken", token);
       await dispatch("socket/initSocket", null, { root: true });
-    },
-    async logout({ commit }) {
-      commit("setUser", null);
-      commit("setToken", null);
     }
   }
 };

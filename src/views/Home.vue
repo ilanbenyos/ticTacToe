@@ -22,6 +22,9 @@
       <v-btn @click="login">
         <span class="mr-2">Login</span>
       </v-btn>
+      <v-btn @click="logout">
+        <span class="mr-2">Logout</span>
+      </v-btn>
     </div>
   </v-container>
 </template>
@@ -40,7 +43,7 @@ export default {
         let obj = { userName: this.userName, password: this.password };
         await this.$store.dispatch(`user/register`, obj);
         this.$toast("Registered Successfully");
-        this.$router.push({ name: "game" });
+        this.$router.push({ name: "games" });
       } catch (err) {
         console.log(err);
       } finally {
@@ -50,10 +53,21 @@ export default {
     async login() {
       try {
         this.$loading(true);
-          let obj = { userName: this.userName, password: this.password };
-          await this.$store.dispatch(`user/login`,obj);
+        let obj = { userName: this.userName, password: this.password };
+        await this.$store.dispatch(`user/login`, obj);
         this.$toast("Login Successfully");
-        this.$router.push({ name: "game" });
+        this.$router.push({ name: "games" });
+      } catch (err) {
+        console.log(err);
+      } finally {
+        this.$loading(false);
+      }
+    },
+      async logout() {
+      try {
+        this.$loading(true);
+        await this.$store.dispatch('user/logout')
+        this.$toast("Logout Successfully");
       } catch (err) {
         console.log(err);
       } finally {

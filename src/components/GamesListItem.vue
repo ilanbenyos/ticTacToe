@@ -1,7 +1,8 @@
 <template>
   <v-list-tile avatar>
+    <small v-if="item" class="mr-3">{{ item._id | gameName }}</small>
     <div>{{ item.owner.userName }}</div>
-    <div v-if="item.member" class="ml-2"> vs {{ item.member.userName }}</div>
+    <div v-if="item.member" class="ml-2">vs {{ item.member.userName }}</div>
 
     <v-spacer></v-spacer>
     <div>{{ item.status }}</div>
@@ -15,6 +16,15 @@
       v-if="canRoute"
       class="waiting-list h6"
       >GoTo Game</v-btn
+    >
+
+    <!--<v-select :items="item.waitinglist.userName" @change="selectWaitingList" label="Standard"></v-select>-->
+
+    <v-btn
+      flat
+      @click="$store.dispatch('game/deleteGame', item._id)"
+      class="waiting-list h6"
+      >DEL</v-btn
     >
   </v-list-tile>
 </template>
@@ -42,13 +52,17 @@ export default {
       );
     },
     canJoin() {
+      if (this.item.owner._id === this.userId) return false;
       if (this.item.status === "init") return true;
-      if (this.item.status === "waitingList" && this.isInWaitingList)
-        return true;
+      if (this.item.status === "waiting" && !this.isInWaitingList) return true;
       return false;
     }
   },
   methods: {
+    async selectWaitingList(v) {
+      let rrr = v;
+      debugger;
+    },
     async dispatchEvent(actionStr, data) {
       try {
         this.$loading(true);
