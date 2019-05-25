@@ -1,30 +1,28 @@
 <template>
   <v-container class="game app-page">
-    <h1 class="mt-5 text-center">
-      Game
-      <small class="mr-3" v-if="game">{{ game._id.substring(6, 10) }}</small>
-    </h1>
-    <h5 v-if="game" class="text-center">
-      You <small> Vs </small>{{ playerName }}
-    </h5>
-    <h5 v-if="game" class="text-center">
-      {{ statusStr }}
-    </h5>
+    <div class="inner" v-if="game">
+      <h1 class="mt-5 text-center">
+        Game
+        <small class="mr-3">{{ game._id.substring(6, 10) }}</small>
+      </h1>
+      <h5 class="text-center" v-html="subTitle"></h5>
+      <h5 class="text-center">{{ statusStr }}{{ endStr }}</h5>
 
-    <div class="board-wrapper d-flex">
-      <div class="board" v-if="game">
-        <div class="board-row d-flex" v-for="(row, i) in game.board" :key="i">
-          <div
-            class="square"
-            @click="clicked(i, j)"
-            :class="{
-              blink: game.winner && isBlinking('' + i + j),
-              clickable: !!!square && isMyTurn && game.status == 'playing'
-            }"
-            v-for="(square, j) in row"
-            :key="j"
-          >
-            {{ square }}
+      <div class="board-wrapper d-flex">
+        <div class="board">
+          <div class="board-row d-flex" v-for="(row, i) in game.board" :key="i">
+            <div
+              class="square"
+              @click="clicked(i, j)"
+              :class="{
+                blink: game.winner && isBlinking('' + i + j),
+                clickable: !!!square && isMyTurn && game.status == 'playing'
+              }"
+              v-for="(square, j) in row"
+              :key="j"
+            >
+              {{ square }}
+            </div>
           </div>
         </div>
       </div>
@@ -76,6 +74,21 @@ export default {
     ...mapGetters("game", {
       game: "getGame"
     }),
+    endStr() {
+      if (this.game.status === "ended") {
+        let name = "";
+
+        if (this.user._id === this.game.winner) {
+            name = 'You';
+        }else if (this.game.owner._id === this.game.winner) {
+          name = this.game.owner.userName;
+        } else {
+          name = this.game.member.userName;
+        }
+        return `- ${name} Won!`;
+      }
+      return "";
+    },
     statusStr() {
       if (this.game.status !== "playing") {
         return this.game.status;
@@ -88,11 +101,20 @@ export default {
     user() {
       return this.$store.getters["user/getMe"];
     },
-    playerName() {
-      if (this.user._id === this.game.owner._id) {
-        return this.game.member.userName;
+    subTitle() {
+      if (
+        this.user._id === this.game.owner._id ||
+        this.user._id === this.game.member._id
+      ) {
+        if (this.user._id === this.game.owner._id) {
+          return ` You <small> Vs </small> ${this.game.member.userName}`;
+        } else {
+          return ` You <small> Vs </small> ${this.game.owner.userName}`;
+        }
       }
-      return this.game.owner.userName;
+      return ` ${this.game.owner.userName} <small> Vs </small> ${
+        this.game.member.userName
+      }`;
     }
   },
   watch: {

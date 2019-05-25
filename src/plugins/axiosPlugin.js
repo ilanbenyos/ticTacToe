@@ -25,13 +25,16 @@ const plugin = {
         }
         return res.data;
       },
-      async err => {
+      async (err) => {
         console.log(err);
+        let msg = "Something went wrong!"
+        if(err.response && err.response.data) msg = err.response.data
         vue.$swal({
           type: "error",
-          title: err.message,
-          text: "Something went wrong!",
+          title: msg,
+          text: err.message,
         });
+        return Promise.reject(err);
       }
     );
   }
