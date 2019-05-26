@@ -79,8 +79,8 @@ export default {
         let name = "";
 
         if (this.user._id === this.game.winner) {
-            name = 'You';
-        }else if (this.game.owner._id === this.game.winner) {
+          name = "You";
+        } else if (this.game.owner._id === this.game.winner) {
           name = this.game.owner.userName;
         } else {
           name = this.game.member.userName;
@@ -120,16 +120,27 @@ export default {
   watch: {
     "game.winner": function(newVal) {
       if (!this.user || !newVal) return;
-
-      const IsWinner = this.user._id === newVal;
-      const type = IsWinner ? "success" : "warning";
-      this.$swal({
-        text: `YOU ${IsWinner ? "WIN" : "LOSE"}`,
-        type,
-        showCancelButton: false,
-        confirmButtonColor: "#3085d6",
-        title: "GAME ENDED!"
-      });
+      // =========IF FULL BOARD===========
+      if (newVal === "EVEN") {
+        this.$swal({
+          text: "GAME ENDED, NO WINNER NO LOSER",
+          type: "success",
+          showCancelButton: false,
+          confirmButtonColor: "#3085d6",
+          title: "GAME ENDED!"
+        });
+      } else {
+        // =========IF WINNER===========
+        const IsWinner = this.user._id === newVal;
+        const type = IsWinner ? "success" : "warning";
+        this.$swal({
+          text: `YOU ${IsWinner ? "WIN" : "LOSE"}`,
+          type,
+          showCancelButton: false,
+          confirmButtonColor: "#3085d6",
+          title: "GAME ENDED!"
+        });
+      }
     }
   }
 };
