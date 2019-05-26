@@ -38,7 +38,10 @@ export default {
         window.alert(msg);
       });
       $socket.on("JOIN_REQUEST_REJECTED", async game => {
-        vue.$notify("JOIN_REQUEST_REJECTED");
+        vue.$notify({
+          text: "Join Request Rejected",
+          title: "SORRY..."
+        });
         await dispatch("games/fetchGames", game, { root: true });
       });
     }

@@ -36,7 +36,7 @@ export default {
     notify({text,title}) {
       this.$swal({
         type: "warning",
-        showCancelButton: true,
+        // showCancelButton: true,
         confirmButtonColor: "#3085d6",
         cancelButtonColor: "#d33",
         text,

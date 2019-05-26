@@ -83,7 +83,8 @@ export default {
     canJoin() {
       if (this.item.owner._id === this.userId) return false;
       if (this.item.status === "init") return true;
-      if (this.item.status === "waiting" && !this.isInWaitingList) return true;
+      // if (this.item.status === "waiting" && !this.isInWaitingList) return true;
+      if (this.item.status === "waiting") return true;
       return false;
     }
   },
