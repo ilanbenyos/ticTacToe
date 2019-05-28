@@ -10,4 +10,4 @@ goto https://github.com/ilanbenyos/ticTacToe/settings
 goto GitHub Pages section
 
 
-git add . && git commit -m "push to GH-pages" && npm run build && git push --delete origin  gh-pages && git subtree push --prefix dist origin gh-pages &&
+git push --delete origin gh-pages && git add . && git commit -m "push to GH-pages" && npm run build && git push --delete origin  gh-pages && git subtree push --prefix dist origin gh-pages
