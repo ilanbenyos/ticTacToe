@@ -19,8 +19,8 @@
     >
     <v-menu open-on-hover offset-y v-if="waitingSelect">
       <template v-slot:activator="{ on }">
-        <v-btn color="primary" dark v-on="on">
-          Dropdown
+        <v-btn flat v-on="on">
+          Join Requests
         </v-btn>
       </template>
       <v-list>
@@ -59,13 +59,17 @@ export default {
     statusStr() {
       const game = this.item;
       if (this.item.status === "ended") {
-        let winnerName =
-          game.winner === game.owner._id
-            ? game.owner.userName
-            : game.member.userName;
-        return `${winnerName} won`;
+        if (game.winner === 'EVEN') {
+            return "Even";
+        }else{
+          let winnerName =
+            game.winner === game.owner._id
+              ? game.owner.userName
+              : game.member.userName;
+          return `${winnerName} won`;
+        }
       }
-      return this.item.status;
+      return `Game ${this.item.status}`
     },
     userId() {
       return this.$store.getters["user/userId"];
@@ -90,9 +94,9 @@ export default {
   },
   methods: {
     async selectWaitingList(idx) {
-        let memberId = this.item.waitingList[idx]._id
-        let obj = { memberId, gameId: this.item._id };
-        await this.dispatchEvent("game/startGame", obj);
+      let memberId = this.item.waitingList[idx]._id;
+      let obj = { memberId, gameId: this.item._id };
+      await this.dispatchEvent("game/startGame", obj);
     },
     async dispatchEvent(actionStr, data) {
       try {
