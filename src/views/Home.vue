@@ -35,8 +35,8 @@
 export default {
   name: "Home",
   data: () => ({
-    password: "1234",
-    userName: "qqqq"
+    password: "",
+    userName: ""
   }),
   methods: {
     async register() {
