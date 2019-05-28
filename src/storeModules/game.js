@@ -1,5 +1,5 @@
 import axios from "axios";
-import { baseApi } from "../../config";
+import { ROOT_API } from "../../config";
 export default {
   namespaced: true,
   state: {
@@ -37,15 +37,15 @@ export default {
   },
   actions: {
     async deleteGame({ dispatch }, gameId) {
-      await axios.post(`${baseApi}/games/deleteGame`, { gameId });
+      await axios.post(`${ROOT_API}/games/deleteGame`, { gameId });
       await dispatch("games/fetchGames", null, { root: true });
     },
     async initGame({ dispatch }) {
-      let { game } = await axios.post(`${baseApi}/games/initGame`);
+      let { game } = await axios.post(`${ROOT_API}/games/initGame`);
       await dispatch("games/fetchGames", null, { root: true });
     },
     async joinRequest({ commit, dispatch }, gameId) {
-      let { game } = await axios.post(`${baseApi}/games/joinRequest`, {
+      let { game } = await axios.post(`${ROOT_API}/games/joinRequest`, {
         gameId
       });
       await dispatch("games/fetchGames", null, { root: true });
@@ -74,14 +74,14 @@ export default {
       await dispatch("games/fetchGames", game, { root: true });
     },
     async rejectJoinRequest({ commit, dispatch }, { memberId, gameId }) {
-      await axios.post(`${baseApi}/games/rejectJoinRequest`, {
+      await axios.post(`${ROOT_API}/games/rejectJoinRequest`, {
         memberId,
         gameId
       });
       await dispatch("games/fetchGames", null, { root: true });
     },
     async startGame({ commit, dispatch }, { memberId, gameId }) {
-      await axios.post(`${baseApi}/games/startGame`, {
+      await axios.post(`${ROOT_API}/games/startGame`, {
         memberId,
         gameId
       });
@@ -94,11 +94,11 @@ export default {
       commit("setGame", game);
     },
     async getGame({ commit }, gameId) {
-      let { game } = await axios.post(`${baseApi}/games/getGame`, { gameId });
+      let { game } = await axios.post(`${ROOT_API}/games/getGame`, { gameId });
       commit("setGame", game);
     },
     async clicked(_, { gameId, square }) {
-      await axios.post(`${baseApi}/games/gameMove`, { gameId, square });
+      await axios.post(`${ROOT_API}/games/gameMove`, { gameId, square });
     }
   }
 };

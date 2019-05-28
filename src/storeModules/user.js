@@ -1,5 +1,5 @@
 import axios from "axios";
-import { baseApi } from "../../config";
+import { ROOT_API } from "../../config";
 export default {
   namespaced: true,
   state: {
@@ -34,23 +34,23 @@ export default {
       }
     },
     async testConnection() {
-      await axios.post(`${baseApi}/games/testV`, {msg: 'test success!!'});
-      // await axios.post(`${baseApi}/users/testConnection`, {msg: 'test success!!'});
+      await axios.post(`${ROOT_API}/users/testConnection`, {msg: 'test success!!'});
+      // await axios.post(`${ROOT_API}/games/testV`, {msg: 'test success!!'});
     },
     async getMe({ commit }) {
-      let { user } = await axios.post(`${baseApi}/users/getMe`);
+      let { user } = await axios.post(`${ROOT_API}/users/getMe`);
       commit("setUser", user);
     },
     async register({ dispatch }, userData) {
-      let res = await axios.post(`${baseApi}/users/register`, userData);
+      let res = await axios.post(`${ROOT_API}/users/register`, userData);
       dispatch("userFetched", res);
     },
     async login({ dispatch }, userData) {
-      let res = await axios.post(`${baseApi}/users/login`, userData);
+      let res = await axios.post(`${ROOT_API}/users/login`, userData);
       dispatch("userFetched", res);
     },
     async logout({ dispatch, commit }) {
-      await axios.post(`${baseApi}/users/logout`);
+      await axios.post(`${ROOT_API}/users/logout`);
       localStorage.removeItem("jwtToken");
         commit("setUser", null);
 

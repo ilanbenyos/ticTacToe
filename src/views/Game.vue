@@ -77,21 +77,24 @@ export default {
     endStr() {
       if (this.game.status === "ended") {
         let name = "";
-
-        if (this.user._id === this.game.winner) {
-          name = "You";
-        } else if (this.game.owner._id === this.game.winner) {
-          name = this.game.owner.userName;
+        if (this.game.winner === "EVEN") {
+          return "- Even";
         } else {
-          name = this.game.member.userName;
+          if (this.user._id === this.game.winner) {
+            name = "You";
+          } else if (this.game.owner._id === this.game.winner) {
+            name = this.game.owner.userName;
+          } else {
+            name = this.game.member.userName;
+          }
+          return `- ${name} Won!`;
         }
-        return `- ${name} Won!`;
       }
       return "";
     },
     statusStr() {
       if (this.game.status !== "playing") {
-        return this.game.status;
+        return `Game ${this.game.status}`;
       }
       return this.isMyTurn ? "Your turn" : "His turn";
     },

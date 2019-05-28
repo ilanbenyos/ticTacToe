@@ -1,4 +1,6 @@
 import io from "socket.io-client";
+import { SOCKET_PATH } from "../../config";
+
 let $socket = null;
 
 export default {
@@ -15,7 +17,7 @@ export default {
       let userId = rootGetters["user/userId"];
       let token = localStorage.getItem("jwtToken");
       $socket = io.connect(
-        `http://localhost:3001?token=${token}&userId=${userId}`
+        `${SOCKET_PATH}?token=${token}&userId=${userId}`
       );
       $socket.on("connect", async () => {
         console.log("$socket.on.connect => 7777777777777777777777777");
@@ -26,6 +28,9 @@ export default {
           { game, user },
           { root: true }
         );
+      });
+      $socket.on("MSG", msg => {
+        console.log('socetMsg',msg);
       });
       $socket.on("GAME_STARTED", async game => {
         await dispatch("game/gameStarted", game, { root: true });

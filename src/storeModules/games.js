@@ -1,5 +1,5 @@
 import axios from "axios";
-import { baseApi } from "../../config";
+import { ROOT_API } from "../../config";
 export default {
   namespaced: true,
   state: {
@@ -17,7 +17,7 @@ export default {
   },
   actions: {
     async fetchGames({ commit }) {
-      let { games } = await axios.post(`${baseApi}/games/fetchGames`);
+      let { games } = await axios.post(`${ROOT_API}/games/fetchGames`);
       commit("setInitialGames", games);
     }
   }
