@@ -19,8 +19,9 @@ export default {
       $socket = io.connect(
         `${SOCKET_PATH}?token=${token}&userId=${userId}`
       );
+
       $socket.on("connect", async () => {
-        console.log("$socket.on.connect => 7777777777777777777777777");
+        console.log("socket.on.connect");
       });
       $socket.on("JOIN_REQUEST", async (game, user) => {
         await dispatch(
@@ -28,9 +29,6 @@ export default {
           { game, user },
           { root: true }
         );
-      });
-      $socket.on("MSG", msg => {
-        console.log('socetMsg',msg);
       });
       $socket.on("GAME_STARTED", async game => {
         await dispatch("game/gameStarted", game, { root: true });
@@ -40,7 +38,6 @@ export default {
       });
       $socket.on("TEST_CONNECTION", async msg => {
         console.log(msg);
-        window.alert(msg);
       });
       $socket.on("JOIN_REQUEST_REJECTED", async game => {
         vue.$notify({

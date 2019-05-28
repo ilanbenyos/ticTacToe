@@ -50,7 +50,8 @@ export default new Vuex.Store({
     async initStore({ dispatch }) {
       let token = localStorage.getItem("jwtToken");
       if (token) {
-        await dispatch("user/initModule");
+        await dispatch("user/getMe");
+        await dispatch("socket/initSocket", null, { root: true });
       }
     },
     async dropAllTables({ getters, dispatch, commit }) {

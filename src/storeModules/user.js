@@ -29,12 +29,14 @@ export default {
     async initModule({ dispatch }) {
       let token = localStorage.getItem("jwtToken");
       if (token) {
-        dispatch("getMe", token);
-        await dispatch("socket/initSocket", null, { root: true });
+        await dispatch("getMe");
+        console.log("socket/initSocket ppppppppppppppppppppppppppppppp");
       }
     },
     async testConnection() {
-      await axios.post(`${ROOT_API}/users/testConnection`, {msg: 'test success!!'});
+      await axios.post(`${ROOT_API}/users/testConnection`, {
+        msg: "test success!!"
+      });
       // await axios.post(`${ROOT_API}/games/testV`, {msg: 'test success!!'});
     },
     async getMe({ commit }) {
@@ -52,9 +54,9 @@ export default {
     async logout({ dispatch, commit }) {
       await axios.post(`${ROOT_API}/users/logout`);
       localStorage.removeItem("jwtToken");
-        commit("setUser", null);
+      commit("setUser", null);
 
-        await dispatch("socket/closeSocket", null, { root: true });
+      await dispatch("socket/closeSocket", null, { root: true });
     },
     async userFetched({ commit, dispatch }, { user, token }) {
       commit("setUser", user);
